@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen de Texto</title>
+</head>
+<body>
+    <h1>Resumen de Texto</h1>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="texto" rows="10" cols="50" placeholder="Ingrese su texto aquí"></textarea>
+        <br>
+        <input type="submit" value="Resumir">
+    </form>
+    {% if texto %}
+        <h2>Texto ingresado:</h2>
+        <p>{{ texto }}</p>
+        <!-- Aquí puedes mostrar el resumen generado -->
+    {% endif %}
+</body>
+</html>
