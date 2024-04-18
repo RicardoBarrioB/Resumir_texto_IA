@@ -12,27 +12,20 @@ def preprocess_text(text):
     if isinstance(text, str):  # Verificar si text es una cadena de texto
         # Convertir a minúsculas
         text = text.lower()
-        # Eliminar caracteres no alfabéticos
-        text = re.sub(r'[^a-zA-Z\s]', '', text)
+        # Eliminar caracteres no alfabéticos excepto el apóstrofe
+        text = re.sub(r'[^a-zA-Z\s\']', '', text)
         # Tokenizar el texto
         tokens = word_tokenize(text)
         # Eliminar stop words
-        stop_words = set(stopwords.words('english'))
-        tokens = [word for word in tokens if word not in stop_words]
-        # Stemming (opcional, puedes omitirlo si no lo deseas)
-        stemmer = PorterStemmer()
-        tokens = [stemmer.stem(word) for word in tokens]
-        # Unir tokens en una cadena
-        preprocessed_text = ' '.join(tokens)
-        return preprocessed_text
+        #stop_words = set(stopwords.words('english'))
+        #tokens = [word for word in tokens if word not in stop_words]
+        return tokens  # Devolver lista de tokens preprocesados
     else:
-        return ''  # Si no es una cadena de texto, retornar una cadena vacía
+        return []  # Si no es una cadena de texto, retornar una cadena vacía
 
 # Crear el pipeline
 pipeline = Pipeline([
-    # Paso de preprocesamiento de texto
     ('preprocess', FunctionTransformer(preprocess_text)),
-    # Convertir texto a vectores usando CountVectorizer (o cualquier otro vectorizador que desees usar)
     ('vectorize', CountVectorizer())
 ])
 
@@ -49,16 +42,18 @@ def cargar_datos(nombre_archivo):
     # Seleccionar las columnas relevantes ('post', 'summaries', etc.)
     df = df[['post', 'summaries']]
 
-    df['post'] = df['post'].astype(str)
+    # Procesar el contenido del texto antes de pasarlo al pipeline
+    df['post'] = df['post'].apply(lambda x: preprocess_text(x) if isinstance(x, str) else '')
 
     return df
 
 # Ruta relativa al archivo CSV
-nombre_archivo = '../data/comparisons_train.csv'
+nombre_archivo = '../datas/comparisons_train.csv'
 
+# Cargar los datos
 df = cargar_datos(nombre_archivo)
 
-# Aplicar el pipeline al texto
+# Ahora aplicar el pipeline al texto
 X_text = pipeline.fit_transform(df['post'])
 
 # Ahora X_text contiene el texto preprocesado y convertido a vectores
