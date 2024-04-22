@@ -7,7 +7,9 @@ from nltk.stem import PorterStemmer
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import FunctionTransformer
+from keras.layers import TextVectorization
 from keras.preprocessing.text import Tokenizer
+from keras.preprocessing import text
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import Embedding, LSTM, Dense
@@ -94,3 +96,5 @@ print(f'Loss: {loss}, Accuracy: {accuracy}')
 
 # Guardar modelo
 model.save('lstm_model.h5')
+
+
